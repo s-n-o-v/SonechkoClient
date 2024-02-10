@@ -3,15 +3,20 @@ import {AppState} from "./types.ts";
 import webSocketReducer from './slices/webSockets/webSocket.slice.ts';
 import settingsReducer from './slices/settings/settings.slice.ts';
 import balancesReducer from './slices/balances/balances.slice.ts';
-// import MessagesReducer from './slices/messages/messages.slice.ts';
+import uptimeReducer from './slices/uptime/uptime.slice.ts';
+import positionReducer from './slices/positions/positions.slice.ts';
+import chartReducer from './slices/chart/chart.slice.ts';
+
 import {webSocketMiddleware} from "./middleware/webSocket.middleware.ts";
 
 export const store = configureStore<AppState>({
     reducer: {
         webSocket: webSocketReducer,
+        positions: positionReducer,
         balances: balancesReducer,
         settings: settingsReducer,
-        // messages: MessagesReducer
+        uptime: uptimeReducer,
+        chart: chartReducer,
     },
     // @ts-ignore
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(webSocketMiddleware),

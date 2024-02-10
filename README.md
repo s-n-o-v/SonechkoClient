@@ -1,4 +1,4 @@
-# React + TypeScript + Vite + RTK + SocketIO
+# React + TypeScript + RTK + SocketIO + Vite
 
 A client to display and configure Sonechko bot.
 

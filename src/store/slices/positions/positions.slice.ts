@@ -12,7 +12,9 @@ const PositionsSlice = createSlice({
         attach ( state, action: PayloadAction<PositionResponse> ) {
             if (action.payload) {
                 Object.keys(action.payload).forEach((item: string) => {
+
                     const idx = state.list.findIndex(s => s.idKey === item);
+
                     if (idx >= 0) {
 
                         state.list[idx] = { ...action.payload[item], idKey: item };
