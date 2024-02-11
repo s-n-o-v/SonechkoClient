@@ -11,6 +11,8 @@ import {load} from "../slices/balances/balances.slice.ts";
 import {loadSettings} from "../slices/settings/settings.slice.ts";
 import {UptimeResponse} from "../slices/uptime/types";
 import {setUptimeData} from "../slices/uptime/uptime.slice.ts";
+import {PositionResponse} from "../slices/positions/types";
+import {attach} from "../slices/positions/positions.slice.ts";
 // import {PositionResponse} from "../slices/positions/types";
 
 // let socket: Socket<ServerToClientListen, ClientToServerListen>
@@ -33,10 +35,10 @@ export const webSocketMiddleware: Middleware<{}, AppState> = store => {
             socket && socket.on('connect', () => console.log('Client connected'));
             socket.on('connect_error', () => console.log('Connection error'));
 
-            // socket.on('Positions', (message: PositionResponse) => {
-            //
-            //     console.log(message)
-            // })
+            socket.on('Positions', (message: PositionResponse) => {
+
+                store.dispatch(attach(message))
+            })
             socket.on('Balances', (message: BalanceResponse) => {
                 store.dispatch(load(message))
             })
