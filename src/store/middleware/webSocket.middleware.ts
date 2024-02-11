@@ -9,6 +9,8 @@ import {BalanceResponse} from "../slices/balances/types";
 import {SettingsResponse} from "../slices/settings/types";
 import {load} from "../slices/balances/balances.slice.ts";
 import {loadSettings} from "../slices/settings/settings.slice.ts";
+import {UptimeResponse} from "../slices/uptime/types";
+import {setUptimeData} from "../slices/uptime/uptime.slice.ts";
 // import {PositionResponse} from "../slices/positions/types";
 
 // let socket: Socket<ServerToClientListen, ClientToServerListen>
@@ -23,8 +25,12 @@ export const webSocketMiddleware: Middleware<{}, AppState> = store => {
 
         if (webSocketState.connect === typeConnect.Disconnected && !socket) {
 
-            socket = io(appConfig.webSocket.connect);
-            socket.on('connect', () => console.log('Client connected'));
+            try {
+                socket = io(appConfig.webSocket.connect);
+            } catch (e) {
+                console.error(e)
+            }
+            socket && socket.on('connect', () => console.log('Client connected'));
             socket.on('connect_error', () => console.log('Connection error'));
 
             // socket.on('Positions', (message: PositionResponse) => {
@@ -32,19 +38,25 @@ export const webSocketMiddleware: Middleware<{}, AppState> = store => {
             //     console.log(message)
             // })
             socket.on('Balances', (message: BalanceResponse) => {
-                // console.log('Balances', message)
                 store.dispatch(load(message))
             })
             socket.on('Settings', (message: SettingsResponse) => {
-                // console.log('Settings', message)
                 store.dispatch(loadSettings(message))
+            })
+            socket.on('Uptime', (message: UptimeResponse) => {
+                store.dispatch(setUptimeData(message))
             })
 
         } else if (webSocketState.connect === typeConnect.Connected && socket) {
 
-            console.log('action', action)
+            // console.log('action', action)
             if ((action as Action).type === 'WebSocket/connect') {
                 console.log('Connect action found', action)
+                // try {
+                //     socket = io(appConfig.webSocket.connect);
+                // } catch (e) {
+                //     console.error(e)
+                // }
             }
         }
         next(action);
